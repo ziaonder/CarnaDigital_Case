@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     private float zSpeed = 10f;
     private bool isInAction = false;
     private Rigidbody rb;
+    private enum State { Set, Play, GameOver }
+    private State state = State.Play;
 
     private void Awake()
     {
@@ -15,9 +17,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        transform.position += new Vector3(0f, 0f, zSpeed) * Time.deltaTime;
-        if (!isInAction && IsGrounded())
-            HandleUserInput();
+        if (state == State.Play)
+        {
+            transform.position += new Vector3(0f, 0f, zSpeed) * Time.deltaTime;
+            if (!isInAction && IsGrounded())
+                HandleUserInput();
+        }
     }
 
     private void HandleUserInput()
@@ -60,11 +65,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        rb.velocity = new Vector3(0f, 5f, 0f);
+        rb.velocity = new Vector3(0f, 6f, 0f);
     }
 
     private bool IsGrounded()
     {
         return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Obstacle")
+        {
+            state = State.GameOver;
+        }
     }
 }

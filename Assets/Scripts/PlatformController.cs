@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class PlatformController : MonoBehaviour
     private Transform mainCam;
     private int currentIndex = 0, nextIndex = 0;
     private float platformLength;
+    public static event Action<float> OnPlatformMoved;
 
     private void Start()
     {
@@ -33,5 +35,8 @@ public class PlatformController : MonoBehaviour
         Vector3 lastPlatformPos = platforms[lastIndex].position;
         platforms[index].position = 
             new Vector3(0f, 0f, lastPlatformPos.z + platformLength);
+
+        // Division by 2 is to get the beginning of the platform.
+        OnPlatformMoved?.Invoke(lastPlatformPos.z + platformLength / 2);
     }
 }
