@@ -20,8 +20,10 @@ public class ObstacleGenerator : MonoBehaviour
 
     private void GenerateObstacles(float platformZPos)
     {
+        // Decide to generate either short or long obstacles.
         bool isShort = Random.Range(0, 2) == 0;
-
+        // Decide which paths to put obstacles. As long obstacles cannot be jumped over, 
+        // they can be max 2 per line.
         int obstacleCount = isShort ? Random.Range(1, 4) : Random.Range(1, 3);
 
         Dictionary<float, bool> positions = new Dictionary<float, bool>()
@@ -40,6 +42,7 @@ public class ObstacleGenerator : MonoBehaviour
 
             Vector3 pos = new Vector3(chosenX, 0.1f, platformZPos + 5);
 
+            // Look for if there is any inactive obstacle to reuse. If not, create one.
             if (isShort)
             {
                 for (int y = 0; y < shortObstacles.childCount; y++)

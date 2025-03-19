@@ -1,24 +1,50 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private float zSpeed = 10f;
+    private float zSpeed = 10f, restrictionTime = 0f;
     private bool isInAction = false;
     private Rigidbody rb;
-    private enum State { Set, Play, GameOver }
-    private State state = State.Play;
+    public static event Action OnObstacleCrash;
+    private bool isMovementRestricted = true;
+    private Vector3 initialPos = new Vector3(0f, 1.1f, 5f);
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnRestart += Restart;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnRestart -= Restart;
+    }
+
     void Update()
     {
-        if (state == State.Play)
+        if (GameManager.Instance.StateProperty == GameManager.State.Play)
         {
+            // This is to prevent the player from moving while the game is starting.
+            if (isMovementRestricted)
+            {
+                restrictionTime += Time.deltaTime;
+                if (restrictionTime >= .2f)
+                {
+                    isMovementRestricted = false;
+                    restrictionTime = 0f;
+                }
+                else
+                    return;
+            }
+
             transform.position += new Vector3(0f, 0f, zSpeed) * Time.deltaTime;
             if (!isInAction && IsGrounded())
                 HandleUserInput();
@@ -73,11 +99,18 @@ public class PlayerMovement : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.down, 1.1f);
     }
 
+    private void Restart()
+    {
+        transform.position = initialPos;
+        rb.velocity = Vector3.zero;
+        isMovementRestricted = true;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Obstacle")
         {
-            state = State.GameOver;
+            OnObstacleCrash?.Invoke();
         }
     }
 }

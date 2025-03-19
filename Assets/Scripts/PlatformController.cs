@@ -10,6 +10,17 @@ public class PlatformController : MonoBehaviour
     private int currentIndex = 0, nextIndex = 0;
     private float platformLength;
     public static event Action<float> OnPlatformMoved;
+    private Vector3 platformInitialPos = new Vector3(0f, 0f, 10f);
+
+    private void OnEnable()
+    {
+        GameManager.OnRestart += Restart;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnRestart -= Restart;
+    }
 
     private void Start()
     {
@@ -38,5 +49,17 @@ public class PlatformController : MonoBehaviour
 
         // Division by 2 is to get the beginning of the platform.
         OnPlatformMoved?.Invoke(lastPlatformPos.z + platformLength / 2);
+    }
+
+    private void Restart()
+    {
+        currentIndex = 0;
+        nextIndex = 0;
+
+        for (int i = 0; i < platforms.Length; i++)
+        {
+            platforms[i].position = platformInitialPos +
+                new Vector3(0f, 0f, 20f) * i;
+        }
     }
 }
