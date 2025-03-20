@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -72,34 +71,34 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleSwipeInput()
     {
-        if (Input.touchCount > 0)
+        if (Input.touchCount <= 0)
+            return;
+
+        if (Input.GetTouch(0).phase == TouchPhase.Began)
+            touchBeginPos = Input.GetTouch(0).position;
+        else if (Input.GetTouch(0).phase == TouchPhase.Ended)
         {
-            if (Input.GetTouch(0).phase == TouchPhase.Began)
-                touchBeginPos = Input.GetTouch(0).position;
-            else if (Input.GetTouch(0).phase == TouchPhase.Ended)
+            // For better UX instead of calculating the swipe vector the moment touch
+            // phase ended, we could calculate its magnitude every frame. The moment
+            // the magnitude reaches a certain threshold, we could decide the action.
+            // Better UX, but more CPU overhead. As we are more concerned about the
+            // performance, I will stick with this implementation.
+            touchEndPos = Input.GetTouch(0).position;
+            Vector3 swipeVector = touchEndPos - touchBeginPos;
+            if (swipeVector.magnitude > 50f)
             {
-                // For better UX instead of calculating the swipe vector the moment touch
-                // phase ended, we could calculate its magnitude every frame. The moment
-                // the magnitude reaches a certain threshold, we could decide the action.
-                // Better UX, but more CPU overhead. As we are more concerned about the
-                // performance, I will stick with this implementation.
-                touchEndPos = Input.GetTouch(0).position;
-                Vector3 swipeVector = touchEndPos - touchBeginPos;
-                if (swipeVector.magnitude > 50f)
-                {
-                    if (Mathf.Abs(swipeVector.y) > Mathf.Abs(swipeVector.x))
-                        Jump();
-                    else
-                    {
-                        if (swipeVector.x < 0)
-                            StartCoroutine(Move(-1));
-                        else
-                            StartCoroutine(Move(1));
-                    }
-                }
+                if (Mathf.Abs(swipeVector.y) > Mathf.Abs(swipeVector.x))
+                    Jump();
                 else
-                    return;
+                {
+                    if (swipeVector.x < 0)
+                        StartCoroutine(Move(-1));
+                    else
+                        StartCoroutine(Move(1));
+                }
             }
+            else
+                return;
         }
     }
 
