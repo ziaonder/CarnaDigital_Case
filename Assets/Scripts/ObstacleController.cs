@@ -14,19 +14,19 @@ public class ObstacleController : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnRestart += Restart;
+        UIManager.OnRestart += Restart;
     }
 
     private void OnDisable()
     {
-        GameManager.OnRestart -= Restart;
+        UIManager.OnRestart -= Restart;
     }
 
     void Update()
     {
         timer += Time.deltaTime;
 
-        // Check every 1 second to reduce CPU overhead.
+        // Check every 1 second not every frame to reduce CPU overhead.
         if(timer >= 1f)
         {
             LookForVisibility();

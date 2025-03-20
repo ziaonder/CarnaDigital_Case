@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public enum State { Set, Play, GameOver }
     public State StateProperty { private set; get; } = State.Set;
     private static GameManager instance;
+    [SerializeField] private GameObject panelSet, panelGameOver;
+    public bool isSwipeMechanicsEnabled { private set; get; } = true;
     public static GameManager Instance
     {
         get
@@ -30,31 +32,28 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
     }
-    [SerializeField] private GameObject panelSet, panelGameOver;
-    public static event Action OnRestart;
 
     private void OnEnable()
     {
         PlayerMovement.OnObstacleCrash += GameOver;
+        PlayerMovement.OnFall += GameOver;
+        UIManager.OnRestart += Set;
+        UIManager.OnPlay += Play;
     }
 
     private void OnDisable()
     {
         PlayerMovement.OnObstacleCrash -= GameOver;
+        PlayerMovement.OnFall -= GameOver;
+        UIManager.OnRestart -= Set;
+        UIManager.OnPlay -= Play;
     }
 
     private void Start()
     {
         Set();
-    }
-
-    private void Update()
-    {
-        if(StateProperty == State.Set && Input.touchCount > 0)
-        {
-            StateProperty = State.Play;
-            panelSet.SetActive(false);
-        }
+        // Some devices?(or Unity) limit it to 30fps on mobile by default.
+        Application.targetFrameRate = 120;
     }
 
     private void Set()
@@ -70,9 +69,14 @@ public class GameManager : MonoBehaviour
         StateProperty = State.GameOver;
     }
 
-    public void Restart()
+    private void Play()
     {
-        OnRestart?.Invoke();
-        Set();
+        StateProperty = State.Play;
+        panelSet.SetActive(false);
+    }
+
+    public void SetSwipeMechanic(bool value)
+    {
+        isSwipeMechanicsEnabled = value;
     }
 }

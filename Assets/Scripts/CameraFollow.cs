@@ -10,12 +10,12 @@ public class CameraFollow : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.OnRestart += Restart;
+        UIManager.OnRestart += Restart;
     }
 
     private void OnDisable()
     {
-        GameManager.OnRestart -= Restart;
+        UIManager.OnRestart -= Restart;
     }
 
     void Update()
