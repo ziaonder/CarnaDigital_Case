@@ -1,5 +1,17 @@
 # Endless Runner
 
+## **How to Play**
+- There are 2 different approaches to play. The default one is set to swipe mechanics. 
+**Swipe Mechanics**
+Jump     -> Swipe up
+Go left  -> Swipe left
+Go right -> Swipe right
+**Tap Mechanics**
+The screen is divided into 3 vertical parts.
+Jump     -> Tap middle part
+Go left  -> Tap left part
+Go right -> Tap right part
+
 ## **Obstacles**
 - There are two types of obstacles: **Short** and **Long**.
   - Short obstacles can be jumped over.
