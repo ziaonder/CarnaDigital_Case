@@ -33,6 +33,3 @@ The screen is divided into 3 vertical parts:
 - The **player movement speed** increases over time to enhance the challenge.
 - **Obstacles** and **platforms** are disabled once they are no longer in the player's line of sight.
 - The player can walk on one of three paths. Short obstacles can occupy any of the paths, while long obstacles can occupy up to two paths. The path and obstacle placement are selected randomly.
-
-## **Final Notes**
-I thoroughly enjoyed working on this project. While there is certainly room for further enhancements, particularly in terms of visuals (such as VFX, animations for the player and other objects), and smoother, more intuitive movement animations (which could be achieved using DoTween), I am pleased with the final product given the time constraints. I hope you enjoy it as well!
